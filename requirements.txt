@@ -1,0 +1,5 @@
+impacket
+bloodhound
+certipy-ad
+netexec
+coercer
