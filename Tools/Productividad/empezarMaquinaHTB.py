@@ -22,7 +22,7 @@ from itertools import cycle
 # --- CONFIGURACIÓN CENTRALIZADA ---
 # Modifica estas variables para adaptar el script a tu gusto.
 CONFIG = {
-    "HTB_PATH": "/htb",
+    "HTB_PATH": "~/htb",
     "VPN_PATH": "~/vpns", # Ruta donde guardas tus archivos .ovpn
     "SHELL": "/usr/bin/zsh",
     "WORDLISTS": {
