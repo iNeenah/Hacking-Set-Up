@@ -1,5 +1,7 @@
 # Hacking Operations Toolkit - Python Dependencies
-# Lista de dependencias de Python para instalar con: pip install -r requirements.txt
+# Este archivo lista herramientas y librerías de Python recomendadas para el entorno general de hacking.
+# No todas son dependencias directas de los scripts, pero son útiles para el setup.
+# Para instalarlas, usa: pip install -r requirements.txt
 
 # Ingestor de datos para BloodHound, usado para mapear relaciones en Active Directory.
 bloodhound
